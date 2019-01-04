@@ -1,6 +1,6 @@
 {
   "name": "postcss-unit",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a postcss plugin which convert any css unit",
   "main": "index.js",
   "scripts": {
@@ -8,14 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https:www.github.com/b2ns/postcss-unit"
+    "url": "git+https://github.com/b2ns/postcss-unit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/b2ns/postcss-unit/issues"
   },
   "keywords": [
     "postcss",
     "plugin",
     "px",
+    "rpx",
     "vw",
     "em",
+    "rem",
     "unit"
   ],
   "author": "b2ns",

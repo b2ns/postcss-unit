@@ -1,56 +1,51 @@
 const postcss = require('postcss')
 
-module.exports = postcss.plugin('postcss-unit', (opts) => {
+module.exports = postcss.plugin('postcss-unit', opts => {
     opts = opts || {};
     const defaultOpts = {
-        unitToConvert: 'px',
-        targetUnit: 'rpx',
-        convertFunction: num => num,
-        unitPrecision: 3,
+        from: 'px',
+        to: 'rpx',
+        convert: num => num,
+        precision: 3,
         minValue: 0,
         mediaQuery: false
     };
 
-    if (Array.isArray(opts)) {
-        opts.forEach((opt, index) => {
-            opts[index] = Object.assign({}, defaultOpts, opt);
-        });
-    } else {
-        opts = [Object.assign({}, defaultOpts, opts)];
+    if (!Array.isArray(opts)) {
+        opts = [opts];
     }
-
-    opts.forEach(opt => {
-        opt.__regexp__ = new RegExp(`(\\d*\\.?\\d+)${opt.unitToConvert}` , 'ig');
+    opts.forEach((opt, index) => {
+        opts[index] = Object.assign({}, defaultOpts, opt);
+        opts[index].__regexp__ = new RegExp(`(\\d*\\.?\\d+)${opts[index].from}` , 'ig');
     });
 
     const replace = (value, opt) => {
         return value.replace(opt.__regexp__, (match, num) => {
             if (!num || num <= opt.minValue) return match;
 
-            let targetNum = opt.convertFunction(+num);
-            if (~targetNum.toString().indexOf('.')) {
-                targetNum = targetNum.toFixed(opt.unitPrecision);
+            let targetNum = opt.convert(+num);
+            // if is decimal, apply precision
+            if (~targetNum.toString().indexOf('.') && opt.precision >= 0) {
+                targetNum = targetNum.toFixed(opt.precision);
             }
 
-            return targetNum + opt.targetUnit;
+            return targetNum + opt.to;
         });
     };
 
     return (root, result) => {
-        root.walkDecls(decl => {
-            opts.forEach((opt) => {
-                if (!~decl.value.indexOf(opt.unitToConvert)) return;
+        opts.forEach(opt => {
+            root.walkDecls(decl => {
+                if (!~decl.value.indexOf(opt.from)) return;
                 decl.value = replace(decl.value, opt);
             });
-        });
 
-        if (opts.mediaQuery) {
-            root.walkAtRules(rule => {
-                opts.forEach((opt) => {
-                    if (!~rule.params.indexOf(opt.unitToConvert)) return;
+            if (opt.mediaQuery) {
+                root.walkAtRules(rule => {
+                    if (!~rule.params.indexOf(opt.from)) return;
                     rule.params = replace(rule.params, opt);
                 });
-            });
-        }
+            }
+        });
     }
 })
