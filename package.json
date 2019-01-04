@@ -1,0 +1,23 @@
+{
+  "name": "postcss-unit",
+  "version": "0.0.1",
+  "description": "a postcss plugin which convert any css unit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https:www.github.com/b2ns/postcss-unit"
+  },
+  "keywords": [
+    "postcss",
+    "plugin",
+    "px",
+    "vw",
+    "em",
+    "unit"
+  ],
+  "author": "b2ns",
+  "license": "MIT"
+}
