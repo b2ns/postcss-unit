@@ -1,6 +1,6 @@
 {
   "name": "postcss-unit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a postcss plugin which convert any css unit",
   "main": "index.js",
   "scripts": {

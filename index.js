@@ -8,7 +8,9 @@ module.exports = postcss.plugin('postcss-unit', opts => {
         convert: num => num,
         precision: 3,
         minValue: 0,
-        mediaQuery: false
+        mediaQuery: false,
+        propWhiteList: [],
+        selectorBlackList: []
     };
 
     if (!Array.isArray(opts)) {
@@ -32,11 +34,17 @@ module.exports = postcss.plugin('postcss-unit', opts => {
             return targetNum + opt.to;
         });
     };
+    const checkProp = (prop, propWhiteList) => {
+        return !propWhiteList.length || propWhiteList.some(item => !!prop.match(item));
+    }
+    const checkSelector = (selector, selectorBlackList) => {
+        return selectorBlackList.some(item => !!selector.match(item));
+    }
 
     return (root, result) => {
         opts.forEach(opt => {
             root.walkDecls(decl => {
-                if (!~decl.value.indexOf(opt.from)) return;
+                if (!~decl.value.indexOf(opt.from) || !checkProp(decl.prop, opt.propWhiteList) || checkSelector(decl.parent.selector, opt.selectorBlackList)) return;
                 decl.value = replace(decl.value, opt);
             });
 
